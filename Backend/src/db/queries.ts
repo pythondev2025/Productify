@@ -26,10 +26,19 @@ export const updateUser = async (id: string, data: Partial<NewUser>) => {
 
 // upsert => update or create
 export const upsertUser = async (data: NewUser) => {
-    const existingUser = await getUserbyId(data.id);
-    if (existingUser) return updateUser(data.id, data);
+    // const existingUser = await getUserbyId(data.id);
+    // if (existingUser) return updateUser(data.id, data);
 
-    return createUser(data);
+    // return createUser(data);
+    const [user] = await db
+        .insert(users)
+        .values(data)
+        .onConflictDoUpdate({
+            target: users.id,
+            set: data
+        })
+        .returning();
+        return user
 }
 
 // Product Queries
@@ -67,11 +76,24 @@ export const getProductsByUserId = async (userId: string) => {
 }
 
 export const updateProduct = async (id: string, data: Partial<NewProduct>) => {
+    // check if product exists or not
+    const existingProduct = await getProductById(id);
+    if (!existingProduct) {
+        throw new Error(`Product with id: ${id} not found.`);
+    }
+
+    // update the product
     const [product] = await db.update(products).set(data).where(eq(products.id, id)).returning();
     return product;
-}
+};
 
 export const deleteProduct = async (id: string) => {
+    // check if product exists before its deletion
+    const existingProduct = await getProductById(id);
+    if (!existingProduct) {
+        throw new Error(`Product with id: ${id} not found.`);
+    }
+
     const [product] = await db.delete(products).where(eq(products.id, id)).returning();
     return product;
 }
@@ -83,6 +105,12 @@ export const createComment = async (data: NewComment) => {
 }
 
 export const deleteComment = async (id: string) => {
+    // check if product exists before its deletion
+    const existingComment  = await getCommentById(id)
+    if (!existingComment) {
+        throw new Error(`Comment with id: ${id} does not exist.`)
+    }
+
     const [comment] = await db.delete(comments).where(eq(products.id, id)).returning();
     return comment;
 }
