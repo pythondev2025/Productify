@@ -1,14 +1,19 @@
 import { Routes, Route } from "react-router"
+import { useQuery } from "@tanstack/react-query"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/Home"
 import ProductPage from "./pages/Product"
 import ProfilePage from "./pages/Profile"
 import CreateProductPage from "./pages/CreateProduct"
 import EditProductPage from "./pages/EditProduct"
-
+import useUserSync from "./hooks/useUserSync"
+import useAuthReq from "./hooks/useAuthReq"
 
 
 function App() {
+  const { isClerkLoaded } = useAuthReq()
+  useUserSync()
+  if (!isClerkLoaded) return null
   return (
     <div className="min-h-screen bg-base-100">
       <Navbar />
