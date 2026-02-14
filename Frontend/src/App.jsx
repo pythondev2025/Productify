@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router"
-import { useQuery } from "@tanstack/react-query"
+// import { useQuery } from "@tanstack/react-query"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/Home"
 import ProductPage from "./pages/Product"
