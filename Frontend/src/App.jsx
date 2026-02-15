@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router"
+import { Routes, Route, Navigate } from "react-router"
 // import { useQuery } from "@tanstack/react-query"
 import Navbar from "./components/Navbar"
 import HomePage from "./pages/Home"
@@ -11,7 +11,7 @@ import useAuthReq from "./hooks/useAuthReq"
 
 
 function App() {
-  const { isClerkLoaded } = useAuthReq()
+  const { isSignedIn, isClerkLoaded } = useAuthReq()
   useUserSync()
   if (!isClerkLoaded) return null
   return (
@@ -21,9 +21,9 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/create-product" element={<CreateProductPage />} />
-          <Route path="/edit-product/:id" element={<EditProductPage />} />
+          <Route path="/profile" element={isSignedIn ? <ProfilePage />: <Navigate to={"/"} />} />
+          <Route path="/create-product" element={isSignedIn ? <CreateProductPage /> : <Navigate to={"/"} />} />
+          <Route path="/edit-product/:id" element={isSignedIn ? <EditProductPage /> : <Navigate to={"/"} /> } />
         </Routes>
       </main>
     </div>

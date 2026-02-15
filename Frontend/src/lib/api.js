@@ -22,12 +22,12 @@ export const getMyProducts = async () => {
 }
 
 export const createProduct = async (productData) => {
-    const { data } = await api.post("products", productData)
+    const { data } = await api.post("/products", productData)
     return data
 }
 
 export const deleteProduct = async(id) => {
-    const { data } = await api.delete(`products/${id}`) 
+    const { data } = await api.delete(`/products/${id}`) 
     return data
 }
 
